@@ -3,6 +3,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -20,6 +21,8 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         Bundle bundle = intent.getExtras();
         String phoneNr = bundle.getString("incoming_number");
         Log.d(TAG, "onReceive: phone number: "+phoneNr);
+        String currentstate = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
+        Log.d(TAG, "onReceive: state: " +intent.getStringExtra(TelephonyManager.EXTRA_STATE));
     }
     public class CustomPhoneStateListener extends PhoneStateListener{
         private static final String TAG = "CustomPhoneStateListener";
@@ -40,6 +43,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
                     case TelephonyManager.CALL_STATE_RINGING:
                         Log.d(TAG, "onCallStateChanged: Call state ringing");
                         prev_state = state;
+                        Log.d(TAG, "onCallStateChanged: prevstate: " + prev_state);
                         break;
                     case TelephonyManager.CALL_STATE_OFFHOOK:
                         Log.d(TAG, "onCallStateChanged: Call state offhook");
@@ -47,12 +51,15 @@ public class PhoneCallReceiver extends BroadcastReceiver {
                         actionIntent.putExtra("keep",true);
                         ctxt.startActivity(actionIntent);
                         prev_state = state;
+                        Log.d(TAG, "onCallStateChanged: prevstate: "+ prev_state);
                         break;
                     case TelephonyManager.CALL_STATE_IDLE:
-                        Log.d(TAG, "onCallStateChanged: Call state idle");
-                        Log.d(TAG, "onCallStateChanged: Stop ActionActivity");
-                        actionIntent.putExtra("keep",false);
-                        ctxt.startActivity(actionIntent);
+                        Log.d(TAG, "onCallStateChanged: Call state idle prevstate: " + prev_state);
+                        if(prev_state == TelephonyManager.CALL_STATE_OFFHOOK) {
+                            Log.d(TAG, "onCallStateChanged: stop ActionActivity");
+                            actionIntent.putExtra("keep", false);
+                            ctxt.startActivity(actionIntent);
+                        }
                         prev_state = state;
                         break;
                 }

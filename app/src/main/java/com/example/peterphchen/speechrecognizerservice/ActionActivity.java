@@ -27,8 +27,11 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         keep = intent.getExtras().getBoolean("Keep");
-        if(!keep)
-            this.finish();
+        Log.d(TAG, "onNewIntent: keep value: "+keep);
+        if(!keep){
+            Log.d(TAG, "onNewIntent: finish() is called");
+            ActionActivity.this.finish();
+        }
     }
 
     @Override
