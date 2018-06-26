@@ -30,32 +30,15 @@ public class overelayService extends Service {
 
     private WindowManager wm;
     private ImageView smsBtn;
-    private static final String TAG = "overelayService";
+    private static final String TAG = "overlayService";
     private String phoneNumber;
     private FusedLocationProviderClient mLocationProvider;
     private WindowManager.LayoutParams params;
     Location myLocation;
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onCreate: Initialize WindowManager parameter");
-        phoneNumber = intent.getExtras().getString("phone_number");
-
-        if (Build.VERSION.SDK_INT >= 26) {
-            String CHANNEL_ID = "my_channel_01";
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    "temp channel",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-
-            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
-
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle("Service Activated")
-                    .setContentText("The ForegroundService is activated. Do notice.").build();
-
-            startForeground(1, notification);
-        }
-
+    public void onCreate() {
+        super.onCreate();
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
@@ -85,6 +68,27 @@ public class overelayService extends Service {
         }catch (NullPointerException e){
             Log.e(TAG, "onCreate: Error: "+ e.getMessage());
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d(TAG, "onCreate: Initialize WindowManager parameter");
+        phoneNumber = intent.getExtras().getString("phone_number");
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            String CHANNEL_ID = "my_channel_01";
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
+                    "temp channel",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("Service Activated")
+                    .setContentText("The ForegroundService is activated. Do notice.").build();
+
+            startForeground(1, notification);
+        }
         return START_STICKY;
     }
 
@@ -94,7 +98,6 @@ public class overelayService extends Service {
         Log.d(TAG, "senSMS: Send SMS: "+ message);
         mgr.sendTextMessage(phoneNumber,null,message,null,null);
         Toast.makeText(this, "SMS have sent ", Toast.LENGTH_SHORT).show();
-        wm.removeView(smsBtn);
     }
 
 
@@ -106,13 +109,13 @@ public class overelayService extends Service {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
         try {
             wm.removeView(smsBtn);
         }catch (Exception e){
             Log.e(TAG, "onDestroy: "+e.getMessage() );
         }
         Log.d(TAG, "onDestroy: Close this service");
-        super.onDestroy();
     }
 
     private void getDeviceLocation(){

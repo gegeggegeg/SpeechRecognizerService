@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private Switch enableSwitch;
     private final static int OVERLAY_PERMISSION_CODE = 999;
-    private PhoneCallReceiver receiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
