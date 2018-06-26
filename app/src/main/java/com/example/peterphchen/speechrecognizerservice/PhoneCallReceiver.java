@@ -44,6 +44,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
                     case TelephonyManager.CALL_STATE_OFFHOOK:
                         Log.d(TAG, "onCallStateChanged: Call state offhook");
                         Log.d(TAG, "onCallStateChanged: Start ActionActivity");
+                        actionIntent.putExtra("phone_number",phoneNumber);
                         actionIntent.putExtra("keep",true);
                         ctxt.startActivity(actionIntent);
                         prev_state = state;
