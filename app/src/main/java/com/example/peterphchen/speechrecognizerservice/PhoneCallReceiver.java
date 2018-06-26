@@ -2,7 +2,9 @@ package com.example.peterphchen.speechrecognizerservice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -19,7 +21,8 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         telephony.listen(new CustomPhoneStateListener(context),PhoneStateListener.LISTEN_CALL_STATE);
         Bundle bundle = intent.getExtras();
         String phoneNr = bundle.getString("incoming_number");
-        Log.d(TAG, "onReceive: phone number: "+phoneNr);
+        Log.d(TAG, "onReceive: state: " +bundle.getString(TelephonyManager.EXTRA_STATE));
+        Log.d(TAG, "onReceive: prev_state: " +prev_state);
     }
     public class CustomPhoneStateListener extends PhoneStateListener{
         private static final String TAG = "CustomPhoneStateListener";
@@ -33,8 +36,8 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         public void onCallStateChanged(int state, String phoneNumber) {
             if(phoneNumber != null && phoneNumber.length() >0){
                 Intent actionIntent = new Intent();
-                actionIntent.setClassName(ctxt.getPackageName(),ActionActivity.class.getName());
-                actionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                actionIntent.setClassName(ctxt.getPackageName(),overelayService.class.getName());
+                //actionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 incoming_number = phoneNumber;
                 switch (state){
                     case TelephonyManager.CALL_STATE_RINGING:
@@ -43,17 +46,17 @@ public class PhoneCallReceiver extends BroadcastReceiver {
                         break;
                     case TelephonyManager.CALL_STATE_OFFHOOK:
                         Log.d(TAG, "onCallStateChanged: Call state offhook");
-                        Log.d(TAG, "onCallStateChanged: Start ActionActivity");
+                        Log.d(TAG, "onCallStateChanged: Start overlayService");
                         actionIntent.putExtra("phone_number",phoneNumber);
                         actionIntent.putExtra("keep",true);
-                        ctxt.startActivity(actionIntent);
+                        ctxt.startForegroundService(actionIntent);
                         prev_state = state;
                         break;
                     case TelephonyManager.CALL_STATE_IDLE:
+                        Log.d(TAG, "onCallStateChanged: prev_state: "+prev_state);
                         Log.d(TAG, "onCallStateChanged: Call state idle");
-                        Log.d(TAG, "onCallStateChanged: Stop ActionActivity");
-                        actionIntent.putExtra("keep",false);
-                        ctxt.startActivity(actionIntent);
+                        Log.d(TAG, "onCallStateChanged: Stop Service");
+                        ctxt.stopService(actionIntent);
                         prev_state = state;
                         break;
                 }
