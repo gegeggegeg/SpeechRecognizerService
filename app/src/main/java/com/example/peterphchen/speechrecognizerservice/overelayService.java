@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -96,7 +95,6 @@ public class overelayService extends Service {
         mgr.sendTextMessage(phoneNumber,null,message,null,null);
         Toast.makeText(this, "SMS have sent ", Toast.LENGTH_SHORT).show();
         wm.removeView(smsBtn);
-        wm.addView(smsBtn,params);
     }
 
 
@@ -108,7 +106,11 @@ public class overelayService extends Service {
 
     @Override
     public void onDestroy() {
-        wm.removeView(smsBtn);
+        try {
+            wm.removeView(smsBtn);
+        }catch (Exception e){
+            Log.e(TAG, "onDestroy: "+e.getMessage() );
+        }
         Log.d(TAG, "onDestroy: Close this service");
         super.onDestroy();
     }

@@ -3,6 +3,7 @@ package com.example.peterphchen.speechrecognizerservice;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
@@ -13,6 +14,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private Switch enableSwitch;
     private final static int OVERLAY_PERMISSION_CODE = 999;
-
+    private PhoneCallReceiver receiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 if(b){
                     Intent intent = new Intent(MainActivity.this,SurveillanceService.class);
                     Log.d(TAG, "onCheckedChanged: Start Service");
-                    startService(intent);
+                    startForegroundService(intent);
                 }else {
                     Log.d(TAG, "onCheckedChanged: Shut down Service");
                     stopService(new Intent(MainActivity.this,SurveillanceService.class));
