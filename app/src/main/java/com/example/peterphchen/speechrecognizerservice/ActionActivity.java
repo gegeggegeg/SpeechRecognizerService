@@ -31,8 +31,11 @@ public class ActionActivity extends AppCompatActivity implements View.OnClickLis
         super.onNewIntent(intent);
         phonenumber = intent.getExtras().getString("phone_number");
         keep = intent.getExtras().getBoolean("Keep");
-        if(!keep)
-            this.finish();
+        Log.d(TAG, "onNewIntent: keep value: "+keep);
+        if(!keep){
+            Log.d(TAG, "onNewIntent: finish() is called");
+            ActionActivity.this.finish();
+        }
     }
 
     @Override
