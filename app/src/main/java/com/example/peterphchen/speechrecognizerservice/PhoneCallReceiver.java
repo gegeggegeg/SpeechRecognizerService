@@ -2,9 +2,7 @@ package com.example.peterphchen.speechrecognizerservice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -21,6 +19,12 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         telephony.listen(new CustomPhoneStateListener(context),PhoneStateListener.LISTEN_CALL_STATE);
         Bundle bundle = intent.getExtras();
         String phoneNr = bundle.getString("incoming_number");
+        if(bundle.getString(TelephonyManager.EXTRA_STATE).equals("IDLE")){
+            Intent actionIntent = new Intent();
+            actionIntent.setClassName(context.getPackageName(),overelayService.class.getName());
+            Log.d(TAG, "onReceive: stop service");
+            context.stopService(actionIntent);
+        }
         Log.d(TAG, "onReceive: state: " +bundle.getString(TelephonyManager.EXTRA_STATE));
         Log.d(TAG, "onReceive: prev_state: " +prev_state);
     }
@@ -48,7 +52,6 @@ public class PhoneCallReceiver extends BroadcastReceiver {
                         Log.d(TAG, "onCallStateChanged: Call state offhook");
                         Log.d(TAG, "onCallStateChanged: Start overlayService");
                         actionIntent.putExtra("phone_number",phoneNumber);
-                        actionIntent.putExtra("keep",true);
                         ctxt.startForegroundService(actionIntent);
                         prev_state = state;
                         break;
