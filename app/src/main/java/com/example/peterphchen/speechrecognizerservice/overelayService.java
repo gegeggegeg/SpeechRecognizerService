@@ -108,13 +108,14 @@ public class overelayService extends Service {
                     recordBtn.setImageResource(R.mipmap.ic_record);
                     Toast.makeText(overelayService.this, "Stop recording", Toast.LENGTH_SHORT).show();
                     isRecording = false;
+                    recorder.stop();
                 }else{
                     //Start recording
                     Log.d(TAG, "onClick: Start recording");
                     isRecording = true;
                     recordBtn.setImageResource(R.mipmap.ic_record_ing);
                     Toast.makeText(overelayService.this, "Start recording", Toast.LENGTH_SHORT).show();
-                    AudioRecord();
+                    recorder.start();
                 }
             }
         });
