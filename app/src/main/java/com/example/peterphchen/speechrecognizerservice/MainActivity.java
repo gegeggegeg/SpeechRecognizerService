@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int ADMIN_PERMISSION_CODE = 998;
     private DevicePolicyManager mDPM;
     private ComponentName mAdminName;
+    private PhoneCallReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +50,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    Intent intent = new Intent(MainActivity.this,SurveillanceService.class);
-                    Log.d(TAG, "onCheckedChanged: Start Service");
-                    startForegroundService(intent);
+                    IntentFilter filter = new IntentFilter();
+                    filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+                    filter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
+                    Log.d(TAG, "onStartCommand: register receiver\n");
+                    receiver = new PhoneCallReceiver();
+                    registerReceiver(receiver,filter);
                 }else {
-                    Log.d(TAG, "onCheckedChanged: Shut down Service");
-                    stopService(new Intent(MainActivity.this,SurveillanceService.class));
+                    unregisterReceiver(receiver);
                 }
                 SharedPreferences.Editor editor = setting.edit();
                 editor.putBoolean("switch",b);
@@ -65,13 +68,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestAdmin() {
         try {
+            Log.d(TAG, "requestAdmin: get System service");
             mDPM = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
-            mAdminName = new ComponentName(this, overelayService.class);
-            if(mDPM.isAdminActive(mAdminName)){
+            mAdminName = new ComponentName(this, AdminReceiver.class);
+            Log.d(TAG, "requestAdmin: add ComponentName");
+            if(!mDPM.isAdminActive(mAdminName)) {
+                Log.d(TAG, "requestAdmin: Ask for Admin");
                 Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                intent.putExtra(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN, mAdminName);
-                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,"Click on Activate button to secure your application.");
-                startActivityForResult(intent,ADMIN_PERMISSION_CODE);
+                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
+                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Click on Activate button to secure your application.");
+                startActivityForResult(intent, ADMIN_PERMISSION_CODE);
             }
 
         }catch (Exception e){
@@ -117,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "ACTION_MANAGE_OVERLAY_PERMISSION Permission Denied", Toast.LENGTH_SHORT).show();
             }
+        }else if(requestCode == ADMIN_PERMISSION_CODE){
+            Log.d(TAG, "onActivityResult: Admin auth is ok");
         }
     }
 }

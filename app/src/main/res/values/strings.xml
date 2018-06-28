@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SpeechRecognizerService</string>
+    <string name="sample_device_admin">AdminRequest</string>
+    <string name="sample_device_admin_description">Require Admin Authentication</string>
 </resources>

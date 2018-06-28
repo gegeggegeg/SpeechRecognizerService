@@ -10,6 +10,7 @@ import android.graphics.PixelFormat;
 import android.location.Location;
 import android.media.MediaRecorder;
 import android.os.Build;
+import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +27,9 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import java.io.File;
+import java.io.IOException;
 
 public class overelayService extends Service {
 
@@ -94,6 +98,11 @@ public class overelayService extends Service {
             }
         });
 
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
         //Set Record imageview widget and Click listener
         Log.d(TAG, "onCreate: Initialize record button widget");
         isRecording = false;
@@ -105,24 +114,33 @@ public class overelayService extends Service {
                 if(isRecording){
                     //Stop recording
                     Log.d(TAG, "onClick: Stop recording");
+                    if(recorder != null) {
+                        recorder.stop();
+                        recorder.reset();
+                    }
                     recordBtn.setImageResource(R.mipmap.ic_record);
                     Toast.makeText(overelayService.this, "Stop recording", Toast.LENGTH_SHORT).show();
                     isRecording = false;
-                    recorder.stop();
                 }else{
                     //Start recording
-                    Log.d(TAG, "onClick: Start recording");
                     isRecording = true;
                     recordBtn.setImageResource(R.mipmap.ic_record_ing);
                     Toast.makeText(overelayService.this, "Start recording", Toast.LENGTH_SHORT).show();
-                    recorder.start();
+                    String filename = System.currentTimeMillis()+"_"+phoneNumber+".amr";
+                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),filename);
+                    Log.d(TAG, "onClick: Set file name");
+                    recorder.setOutputFile(file.getPath());
+                    try {
+                        recorder.prepare();
+                        recorder.start();
+                        Log.d(TAG, "onClick: Start recording");
+                    }catch (IOException e){
+                        Log.e(TAG, "onClick: Error: "+e.getMessage());
+                    }
                 }
             }
         });
-        recorder = new MediaRecorder();
-        recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
 
         // Add widget to Window manager
         try {
@@ -132,10 +150,6 @@ public class overelayService extends Service {
         }catch (NullPointerException e){
             Log.e(TAG, "onCreate: Error: "+ e.getMessage());
         }
-
-    }
-
-    private void AudioRecord() {
 
     }
 
@@ -165,6 +179,11 @@ public class overelayService extends Service {
     public void onDestroy() {
         super.onDestroy();
         try {
+            //Remove recorder
+            if(recorder != null) {
+                recorder.release();
+                recorder = null;
+            }
             //Remove widget from Foreground
             wm.removeViewImmediate(recordBtn);
             wm.removeViewImmediate(smsBtn);
