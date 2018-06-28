@@ -35,26 +35,17 @@ public class overelayService extends Service {
 
     private WindowManager wm;
     private ImageView smsBtn;
-    private ImageView recordBtn;
-    private boolean isRecording;
     private static final String TAG = "overlayService";
     private String phoneNumber;
     private FusedLocationProviderClient mLocationProvider;
-    private MediaRecorder recorder;
-    private boolean enableMap;
-    private boolean enableRecord;
     private WindowManager.LayoutParams params;
-    private WindowManager.LayoutParams params2;
     Location myLocation;
 
     @Override
     public void onCreate() {
         super.onCreate();
         // Send notification to user so service can continue in background
-        enableMap = getSharedPreferences("Setting",MODE_PRIVATE).getBoolean("mapEnable",false);
-        enableRecord = getSharedPreferences("Setting",MODE_PRIVATE).getBoolean("recordEnable",false);
-        Log.d(TAG, "onCreate: enableMap: " + enableMap);
-        Log.d(TAG, "onCreate: enableRecord "+ enableRecord);
+        wm = (WindowManager)this.getSystemService(Context.WINDOW_SERVICE);
         if (Build.VERSION.SDK_INT >= 26) {
             String CHANNEL_ID = "my_channel_01";
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
@@ -66,6 +57,7 @@ public class overelayService extends Service {
                     .setContentText("The ForegroundService is activated. Do notice.").build();
             startForeground(1, notification);
         }
+
         //Set parameter for SMS button
         Log.d(TAG, "onCreate: Initialize WindowManager parameter");
         params = new WindowManager.LayoutParams(
@@ -76,6 +68,7 @@ public class overelayService extends Service {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.END;
+
         //Set SMS imageview widget and Click listener
         Log.d(TAG, "onCreate: Initialize SMS button widget");
         smsBtn = new ImageView(overelayService.this);
@@ -87,74 +80,10 @@ public class overelayService extends Service {
                 getDeviceLocation();
             }
         });
-        if(enableRecord){
-            //Set parameter for recording button
-            params2 = new WindowManager.LayoutParams(
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT,
-                    20, -500,
-                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-                    PixelFormat.TRANSLUCENT
-            );
 
-            params2.gravity = Gravity.END;
-            Log.d(TAG, "onCreate: Initialize Windowmanager");
-            wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
-
-            recorder = new MediaRecorder();
-            recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_COMMUNICATION);
-            recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
-            //Set Record imageview widget and Click listener
-            Log.d(TAG, "onCreate: Initialize record button widget");
-            isRecording = false;
-            recordBtn = new ImageView(overelayService.this);
-            recordBtn.setImageResource(R.mipmap.ic_record);
-            recordBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (isRecording) {
-                        //Stop recording
-                        Log.d(TAG, "onClick: Stop recording");
-                        if (recorder != null) {
-                            recorder.stop();
-                            recorder.reset();
-                        }
-                        recordBtn.setImageResource(R.mipmap.ic_record);
-                        Toast.makeText(overelayService.this, "Stop recording", Toast.LENGTH_SHORT).show();
-                        isRecording = false;
-                    } else {
-                        //Start recording
-                        isRecording = true;
-                        recordBtn.setImageResource(R.mipmap.ic_record_ing);
-                        Toast.makeText(overelayService.this, "Start recording", Toast.LENGTH_SHORT).show();
-                        String filename = System.currentTimeMillis() + "_" + phoneNumber + ".amr";
-                        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), filename);
-                        Log.d(TAG, "onClick: Set file name");
-                        recorder.setOutputFile(file.getPath());
-                        try {
-                            recorder.prepare();
-                            recorder.start();
-                            Log.d(TAG, "onClick: Start recording");
-                        } catch (IOException e) {
-                            Log.e(TAG, "onClick: Error: " + e.getMessage());
-                        }
-                    }
-                }
-            });
-            try {
-                Log.d(TAG, "onCreate: Add recordbtn widget to window manager");
-                wm.addView(recordBtn, params2);
-            }catch (NullPointerException e){
-                Log.e(TAG, "onCreate: Error: "+ e.getMessage());
-            }
-        }
         try {
             Log.d(TAG, "onCreate: add MapBtn widget to Windowmanager");
-            if (enableMap)
-                wm.addView(smsBtn, params);
+            wm.addView(smsBtn, params);
         }catch (Exception e){
             Log.e(TAG, "onCreate: Error: " + e.getMessage() );
         }
@@ -187,16 +116,7 @@ public class overelayService extends Service {
     public void onDestroy() {
         super.onDestroy();
         try {
-            //Remove recorder
-            if(recorder != null) {
-                recorder.release();
-                recorder = null;
-            }
-            //Remove widget from Foreground
-            if(enableRecord)
-                wm.removeViewImmediate(recordBtn);
-            if(enableMap)
-                wm.removeViewImmediate(smsBtn);
+            wm.removeViewImmediate(smsBtn);
         }catch (Exception e){
             Log.e(TAG, "onDestroy: "+e.getMessage() );
         }
