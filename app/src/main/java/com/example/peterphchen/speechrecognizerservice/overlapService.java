@@ -8,9 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.location.Location;
-import android.media.MediaRecorder;
 import android.os.Build;
-import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,14 +26,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.io.File;
-import java.io.IOException;
-
-public class overelayService extends Service {
+public class overlapService extends Service {
 
     private WindowManager wm;
     private ImageView smsBtn;
-    private static final String TAG = "overlayService";
+    private static final String TAG = "overlapService";
     private String phoneNumber;
     private FusedLocationProviderClient mLocationProvider;
     private WindowManager.LayoutParams params;
@@ -71,7 +66,7 @@ public class overelayService extends Service {
 
         //Set SMS imageview widget and Click listener
         Log.d(TAG, "onCreate: Initialize SMS button widget");
-        smsBtn = new ImageView(overelayService.this);
+        smsBtn = new ImageView(overlapService.this);
         smsBtn.setImageResource(R.mipmap.ic_mail);
         smsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,7 +134,7 @@ public class overelayService extends Service {
                         senSMS(myLocation.getLongitude(), myLocation.getLatitude());
                     }else {
                         Log.d(TAG, "onComplete: Can't found current location");
-                        Toast.makeText(overelayService.this, "Can not find current location", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(overlapService.this, "Can not find current location", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

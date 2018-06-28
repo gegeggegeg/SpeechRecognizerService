@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.LinearLayout;
 
 
 public class PhoneCallReceiver extends BroadcastReceiver {
@@ -22,7 +21,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         String phoneNr = bundle.getString("incoming_number");
         if(bundle.getString(TelephonyManager.EXTRA_STATE).equals("IDLE")){
             Intent actionIntent = new Intent();
-            actionIntent.setClassName(context.getPackageName(),overelayService.class.getName());
+            actionIntent.setClassName(context.getPackageName(),overlapService.class.getName());
             Log.d(TAG, "onReceive: stop service");
             context.stopService(actionIntent);
         }
@@ -41,7 +40,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         public void onCallStateChanged(int state, String phoneNumber) {
             if(phoneNumber != null && phoneNumber.length() >0){
                 Intent actionIntent = new Intent();
-                actionIntent.setClassName(ctxt.getPackageName(),overelayService.class.getName());
+                actionIntent.setClassName(ctxt.getPackageName(),overlapService.class.getName());
                 //actionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 incoming_number = phoneNumber;
                 switch (state){
