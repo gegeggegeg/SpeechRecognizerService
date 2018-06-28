@@ -10,10 +10,29 @@
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="enable service"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="Enable service"
+        android:layout_marginRight="100dp"
+        android:layout_marginTop="150dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+    <Switch
+        android:id="@+id/mapswtich"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enable Map function"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="100dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/switch1"
+        />
+    <Switch
+        android:id="@+id/recordswitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="100dp"
+        android:text="Enable record function"
+        app:layout_constraintTop_toBottomOf="@id/mapswtich"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

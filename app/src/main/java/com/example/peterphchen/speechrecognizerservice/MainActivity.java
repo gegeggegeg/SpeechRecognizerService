@@ -30,11 +30,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private Switch enableSwitch;
+    private Switch enableMap;
+    private Switch enableRecord;
     private final static int OVERLAY_PERMISSION_CODE = 999;
     private final static int ADMIN_PERMISSION_CODE = 998;
     private DevicePolicyManager mDPM;
     private ComponentName mAdminName;
-    private PhoneCallReceiver receiver;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,23 +45,56 @@ public class MainActivity extends AppCompatActivity {
         requestPermission();
         addOverlay();
         requestAdmin();
+
+        final SharedPreferences setting = getSharedPreferences("Setting",MODE_PRIVATE);
         enableSwitch = findViewById(R.id.switch1);
-        final SharedPreferences setting = getPreferences(0);
         enableSwitch.setChecked(setting.getBoolean("switch",false));
+        editor = setting.edit();
+
+        enableMap = findViewById(R.id.mapswtich);
+        enableMap.setEnabled(enableSwitch.isChecked());
+        enableMap.setChecked(setting.getBoolean("mapEnable",false));
+        enableMap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean enablem) {
+                editor.putBoolean("mapEnable", enablem);
+                editor.commit();
+            }
+        });
+
+        enableRecord = findViewById(R.id.recordswitch);
+        enableRecord.setEnabled(enableSwitch.isChecked());
+        enableRecord.setChecked(setting.getBoolean("recordEnable",false));
+        enableRecord.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean enabler) {
+                editor.putBoolean("recordEnable",enabler);
+                editor.commit();
+            }
+        });
+
+
+
         enableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    IntentFilter filter = new IntentFilter();
-                    filter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
-                    filter.addAction(TelephonyManager.ACTION_PHONE_STATE_CHANGED);
-                    Log.d(TAG, "onStartCommand: register receiver\n");
-                    receiver = new PhoneCallReceiver();
-                    registerReceiver(receiver,filter);
+                    Intent intent = new Intent(MainActivity.this,SurveillanceService.class);
+                    Log.d(TAG, "onCheckedChanged: Start Service");
+                    startService(intent);
+                    enableMap.setEnabled(true);
+                    enableRecord.setEnabled(true);
                 }else {
-                    unregisterReceiver(receiver);
+                    Log.d(TAG, "onCheckedChanged: Shut down Service");
+                    stopService(new Intent(MainActivity.this,SurveillanceService.class));
+                    Log.d(TAG, "onCheckedChanged: Disable map enable switch");
+                    enableMap.setChecked(false);
+                    editor.putBoolean("mapEnable",false);
+                    enableMap.setEnabled(false);
+                    enableRecord.setEnabled(false);
+                    enableRecord.setChecked(false);
+                    editor.putBoolean("recordEnable",false);
                 }
-                SharedPreferences.Editor editor = setting.edit();
                 editor.putBoolean("switch",b);
                 editor.commit();
             }
