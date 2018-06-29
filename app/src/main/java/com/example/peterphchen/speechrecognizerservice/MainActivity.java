@@ -2,7 +2,6 @@ package com.example.peterphchen.speechrecognizerservice;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -10,18 +9,12 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    private Switch enableSwitch;
-    private Switch enableMap;
     private final static int OVERLAY_PERMISSION_CODE = 999;
-    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         requestPermission();
         addOverlay();
-
     }
 
     private void requestPermission() {
@@ -48,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                     ,999);
         }
     }
+
     public void addOverlay() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(this)) {
@@ -63,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == OVERLAY_PERMISSION_CODE) {
             if (Settings.canDrawOverlays(this)) {
                 Toast.makeText(this, "ACTION_MANAGE_OVERLAY_PERMISSION Permission Granted", Toast.LENGTH_SHORT).show();
-
             } else {
                 Toast.makeText(this, "ACTION_MANAGE_OVERLAY_PERMISSION Permission Denied", Toast.LENGTH_SHORT).show();
             }

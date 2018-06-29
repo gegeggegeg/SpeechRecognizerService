@@ -41,18 +41,6 @@ public class overlapService extends Service {
         super.onCreate();
         // Send notification to user so service can continue in background
         wm = (WindowManager)this.getSystemService(Context.WINDOW_SERVICE);
-        if (Build.VERSION.SDK_INT >= 26) {
-            String CHANNEL_ID = "my_channel_01";
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,
-                    "temp channel",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle("Service Activated")
-                    .setContentText("The ForegroundService is activated. Do notice.").build();
-            startForeground(1, notification);
-        }
-
         //Set parameter for SMS button
         Log.d(TAG, "onCreate: Initialize WindowManager parameter");
         params = new WindowManager.LayoutParams(
@@ -88,6 +76,14 @@ public class overlapService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         phoneNumber = intent.getExtras().getString("phone_number");
+        String CHANNEL_ID = "my_channel_01";
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID,"temp channel",
+                NotificationManager.IMPORTANCE_DEFAULT);
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("Service Activated")
+                .setContentText("The ForegroundService is activated. Do notice.").build();
+        startForeground(1, notification);
         return START_STICKY;
     }
 
