@@ -4,9 +4,13 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PixelFormat;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
@@ -26,6 +30,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
 public class overlapService extends Service {
 
     private WindowManager wm;
@@ -34,7 +43,9 @@ public class overlapService extends Service {
     private String phoneNumber;
     private FusedLocationProviderClient mLocationProvider;
     private WindowManager.LayoutParams params;
-    Location myLocation;
+    private DatabaseHelper dbhelper;
+    private SQLiteDatabase database;
+    private Location myLocation;
 
     @Override
     public void onCreate() {
@@ -52,6 +63,7 @@ public class overlapService extends Service {
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.END;
 
+        getDeviceLocation();
         //Set SMS imageview widget and Click listener
         Log.d(TAG, "onCreate: Initialize SMS button widget");
         smsBtn = new ImageView(overlapService.this);
@@ -60,7 +72,7 @@ public class overlapService extends Service {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: Get current location and send SMS message");
-                getDeviceLocation();
+                senSMS(myLocation.getLongitude(),myLocation.getLatitude());
             }
         });
 
@@ -70,7 +82,7 @@ public class overlapService extends Service {
         }catch (Exception e){
             Log.e(TAG, "onCreate: Error: " + e.getMessage() );
         }
-
+        saveCurrentStatus();
     }
 
     @Override
@@ -127,7 +139,7 @@ public class overlapService extends Service {
                         myLocation = currentlocation;
                         Log.d(TAG, "onComplete: currentlocation: "+myLocation.getLongitude()+", "+myLocation.getLatitude());
                         //Send SMS message
-                        senSMS(myLocation.getLongitude(), myLocation.getLatitude());
+                        //senSMS(myLocation.getLongitude(), myLocation.getLatitude());
                     }else {
                         Log.d(TAG, "onComplete: Can't found current location");
                         Toast.makeText(overlapService.this, "Can not find current location", Toast.LENGTH_SHORT).show();
@@ -136,6 +148,35 @@ public class overlapService extends Service {
             });
         }catch (SecurityException e){
             Log.e(TAG, "getDeviceLocation: SecurityException: "+e.getMessage() );
+        }
+    }
+
+    private void saveCurrentStatus(){
+        dbhelper = new DatabaseHelper(this);
+        database = dbhelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(LocationContract.LOCATION,getAddress());
+        contentValues.put(LocationContract.LONGITUDE,myLocation.getLongitude());
+        contentValues.put(LocationContract.LATITUDE,myLocation.getLatitude());
+        contentValues.put(LocationContract.TIME, Calendar.getInstance().getTime().toString());
+        contentValues.put(LocationContract.PHONE_NUMBER, phoneNumber);
+        database.insert(LocationContract.TABLE_NAME,null,contentValues);
+        database.close();
+    }
+    private String getAddress(){
+        try {
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addressList = geocoder.getFromLocation(myLocation.getLatitude(),myLocation.getLongitude(),1);
+            String addressStr = addressList.get(0).getAddressLine(0);
+            String areaStr = addressList.get(0).getLocality();
+            String cityStr = addressList.get(0).getAdminArea();
+            String countryStr = addressList.get(0).getCountryName();
+            String postalcodeStr = addressList.get(0).getPostalCode();
+            String fullAddress = addressStr+", "+areaStr+", "+cityStr+", "+countryStr+", "+postalcodeStr;
+            return fullAddress;
+        }catch (IOException e){
+            Log.d(TAG, "getAddress: "+e.getMessage());
+            return null;
         }
     }
 }

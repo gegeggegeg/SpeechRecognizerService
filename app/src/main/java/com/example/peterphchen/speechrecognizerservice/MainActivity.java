@@ -3,25 +3,35 @@ package com.example.peterphchen.speechrecognizerservice;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private final static int OVERLAY_PERMISSION_CODE = 999;
-
+    private Cursor cursor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestPermission();
         addOverlay();
+        String[] projection = {LocationContract.ID,LocationContract.LOCATION,LocationContract.TIME,LocationContract.PHONE_NUMBER};
+        cursor = new DatabaseHelper(this).getReadableDatabase().query(LocationContract.CREATE_TABLE,projection,null,null
+        ,null,null,LocationContract.ID);
+        RecyclerView recyclerView = findViewById(R.id.RecyclerViewMain);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new InformationAdapter(this,cursor));
+        cursor.close();
     }
 
     private void requestPermission() {
