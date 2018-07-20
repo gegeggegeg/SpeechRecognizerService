@@ -1,17 +1,22 @@
 package com.example.peterphchen.speechrecognizerservice;
 
 public class CurserData {
-    private String addrees ="";
-    private String date = "";
-    private String number ="";
-    private String url ="";
+    private String addrees;
+    private String date;
+    private String number;
+    private String url;
+    private int id;
 
-    public CurserData(String addrees, String date, String number,String url) {
+    public CurserData(String addrees, String date, String number,String url,int id) {
         this.addrees = addrees;
         this.date = date;
         this.number = number;
         this.url = url;
+        this.id = id;
     }
+    public int getId(){return id;}
+
+    public void setId(int id){this.id = id;}
 
     public String getUrl() {
         return url;

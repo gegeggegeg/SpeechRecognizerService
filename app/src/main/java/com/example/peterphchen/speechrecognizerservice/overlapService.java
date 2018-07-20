@@ -143,6 +143,7 @@ public class overlapService extends Service {
                     }else {
                         Log.d(TAG, "onComplete: Can't found current location");
                         Toast.makeText(overlapService.this, "Can not find current location", Toast.LENGTH_SHORT).show();
+                        smsBtn.setClickable(false);
                     }
                 }
             });
@@ -152,8 +153,8 @@ public class overlapService extends Service {
     }
 
     private void saveCurrentStatus(){
-        dbhelper = new DatabaseHelper(this);
-        database = dbhelper.getWritableDatabase();
+        //dbhelper = new DatabaseHelper(this);
+        //database = dbhelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(LocationContract.LOCATION,getAddress());
         contentValues.put(LocationContract.LONGITUDE,myLocation.getLongitude());
@@ -162,8 +163,9 @@ public class overlapService extends Service {
         contentValues.put(LocationContract.PHONE_NUMBER, phoneNumber);
         String mapurl = "https://www.google.com/maps/search/?api=1&query="+myLocation.getLatitude()+","+myLocation.getLongitude();
         contentValues.put(LocationContract.GOOGLEMAP_URL,mapurl);
-        database.insert(LocationContract.TABLE_NAME,null,contentValues);
-        database.close();
+        getContentResolver().insert(LocationContract.CONTENT_URI,contentValues);
+        //database.insert(LocationContract.TABLE_NAME,null,contentValues);
+        //database.close();
     }
     private String getAddress(){
         try {

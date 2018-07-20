@@ -20,19 +20,23 @@ import java.util.ArrayList;
 public class InformationAdapter extends RecyclerView.Adapter<InformationHolder> {
     private Context context;
     private static final String TAG = "InformationAdapter";
-    private ArrayList<CurserData> curserData = new ArrayList<>();
+    private ArrayList<CurserData> curserData;
 
     public InformationAdapter(Context context) {
         super();
         String[] projection = {LocationContract.ID,LocationContract.LOCATION,LocationContract.TIME,LocationContract.PHONE_NUMBER,LocationContract.GOOGLEMAP_URL};
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
-        Cursor cursor = database.query(LocationContract.TABLE_NAME,projection,null,null
-                ,null,null,LocationContract.ID);
+        //Cursor cursor = database.query(LocationContract.TABLE_NAME,projection,null,null
+                //,null,null,LocationContract.ID);
+        Cursor cursor = context.getContentResolver().query(LocationContract.CONTENT_URI,projection,null,
+        null,LocationContract.ID);
         this.context=context;
+        curserData = new ArrayList<>();
         while (cursor.moveToNext()){
             curserData.add(new CurserData(cursor.getString(1),cursor.getString(2),
-                    cursor.getString(3),cursor.getString(4)));
+                    cursor.getString(3),cursor.getString(4),cursor.getInt(0)));
+
         }
         cursor.close();
     }
@@ -100,8 +104,10 @@ public class InformationAdapter extends RecyclerView.Adapter<InformationHolder> 
                     public void onClick(DialogInterface dialogInterface, int i) {
                         DatabaseHelper databaseHelper= new DatabaseHelper(context);
                         SQLiteDatabase database = databaseHelper.getWritableDatabase();
-                        database.delete(LocationContract.TABLE_NAME,LocationContract.PHONE_NUMBER+"=?",
-                                new String[]{curserData.get(position).getNumber()});
+                        //database.delete(LocationContract.TABLE_NAME,LocationContract.ID+"=?",
+                                //new String[]{String.valueOf(curserData.get(position).getId())});
+                        context.getContentResolver().delete(LocationContract.CONTENT_URI,LocationContract.ID+"=?",
+                                new String[]{String.valueOf(curserData.get(position).getId())});
                         database.close();
                         curserData.remove(position);
                         notifyItemRemoved(position);

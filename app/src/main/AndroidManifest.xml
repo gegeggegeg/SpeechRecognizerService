@@ -34,5 +34,9 @@
             </intent-filter>
         </receiver>
         <service android:name=".overlapService"/>
+        <provider
+            android:authorities="com.example.peterphchen.speechrecognizerservice"
+            android:name=".InformationProvider"
+            android:exported="false"/>
     </application>
 </manifest>
