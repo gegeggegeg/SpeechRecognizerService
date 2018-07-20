@@ -19,11 +19,15 @@ public class PhoneCallReceiver extends BroadcastReceiver {
         telephony.listen(new CustomPhoneStateListener(context),PhoneStateListener.LISTEN_CALL_STATE);
         Bundle bundle = intent.getExtras();
         String phoneNr = bundle.getString("incoming_number");
-        if(bundle.getString(TelephonyManager.EXTRA_STATE).equals("IDLE")){
-            Intent actionIntent = new Intent();
-            actionIntent.setClassName(context.getPackageName(),overlapService.class.getName());
-            Log.d(TAG, "onReceive: stop service");
-            context.stopService(actionIntent);
+        try {
+            if (bundle.getString(TelephonyManager.EXTRA_STATE).equals("IDLE")) {
+                Intent actionIntent = new Intent();
+                actionIntent.setClassName(context.getPackageName(), overlapService.class.getName());
+                Log.d(TAG, "onReceive: stop service");
+                context.stopService(actionIntent);
+            }
+        }catch (Exception e){
+            Log.e(TAG, "onReceive: Error:"+e.getMessage() );
         }
         Log.d(TAG, "onReceive: state: " +bundle.getString(TelephonyManager.EXTRA_STATE));
         Log.d(TAG, "onReceive: prev_state: " +prev_state);

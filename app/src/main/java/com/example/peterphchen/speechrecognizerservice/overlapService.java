@@ -63,7 +63,6 @@ public class overlapService extends Service {
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.END;
 
-        getDeviceLocation();
         //Set SMS imageview widget and Click listener
         Log.d(TAG, "onCreate: Initialize SMS button widget");
         smsBtn = new ImageView(overlapService.this);
@@ -82,7 +81,7 @@ public class overlapService extends Service {
         }catch (Exception e){
             Log.e(TAG, "onCreate: Error: " + e.getMessage() );
         }
-        saveCurrentStatus();
+        getDeviceLocation();
     }
 
     @Override
@@ -140,6 +139,7 @@ public class overlapService extends Service {
                         Log.d(TAG, "onComplete: currentlocation: "+myLocation.getLongitude()+", "+myLocation.getLatitude());
                         //Send SMS message
                         //senSMS(myLocation.getLongitude(), myLocation.getLatitude());
+                        saveCurrentStatus();
                     }else {
                         Log.d(TAG, "onComplete: Can't found current location");
                         Toast.makeText(overlapService.this, "Can not find current location", Toast.LENGTH_SHORT).show();
@@ -160,6 +160,8 @@ public class overlapService extends Service {
         contentValues.put(LocationContract.LATITUDE,myLocation.getLatitude());
         contentValues.put(LocationContract.TIME, Calendar.getInstance().getTime().toString());
         contentValues.put(LocationContract.PHONE_NUMBER, phoneNumber);
+        String mapurl = "https://www.google.com/maps/search/?api=1&query="+myLocation.getLatitude()+","+myLocation.getLongitude();
+        contentValues.put(LocationContract.GOOGLEMAP_URL,mapurl);
         database.insert(LocationContract.TABLE_NAME,null,contentValues);
         database.close();
     }

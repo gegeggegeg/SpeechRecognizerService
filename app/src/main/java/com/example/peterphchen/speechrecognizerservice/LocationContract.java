@@ -9,7 +9,8 @@ public class LocationContract {
     public static final String LATITUDE = "latitude";
     public static final String TIME = "time";
     public static final String PHONE_NUMBER = "number";
-    public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXIST "+TABLE_NAME+"("+ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"
-            +LOCATION+" TEXT,"+LONGITUDE+" REAL,"+LATITUDE+" REAL,"+TIME+" TEXT,"+PHONE_NUMBER+" TEXT);";
-    public static final String DELETE_TALBE = "DROP TALBE IF EXIST "+TABLE_NAME;
+    public static final String GOOGLEMAP_URL = "mapUrl";
+    public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS "+TABLE_NAME+" ("+ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"
+            +LOCATION+" TEXT,"+LONGITUDE+" REAL,"+LATITUDE+" REAL,"+TIME+" TEXT,"+PHONE_NUMBER+" TEXT,"+ GOOGLEMAP_URL+ " TEXT);";
+    public static final String DELETE_TABLE = "DROP TABLE IF EXISTS "+TABLE_NAME;
 }
