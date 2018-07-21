@@ -25,6 +25,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".AboutActivity" />
+
         <receiver android:name=".PhoneCallReceiver"
             android:enabled="true"
             android:exported="true">

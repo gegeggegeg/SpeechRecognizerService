@@ -1,6 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/textAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="50dp"
+        android:text="AppName: Where'sCall "
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/textVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Version: V0.04"
+        app:layout_constraintTop_toBottomOf="@id/textAppName"
+        app:layout_constraintStart_toStartOf="@id/textAppName"/>
+
+    <TextView
+        android:id="@+id/textIntroduction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/intro"
+        app:layout_constraintStart_toStartOf="@id/textVersion"
+        app:layout_constraintTop_toBottomOf="@id/textVersion"
+        />
+
+    <TextView
+        android:id="@+id/textAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Author: Peter Chen"
+        app:layout_constraintStart_toStartOf="@id/textIntroduction"
+        app:layout_constraintTop_toBottomOf="@id/textIntroduction"/>
+
+    <TextView
+        android:id="@+id/textEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="My Email: chenpeter5566@gmail.com"
+        app:layout_constraintTop_toBottomOf="@id/textAuthor"
+        app:layout_constraintStart_toStartOf="@id/textAuthor"/>
+
+
+
+</android.support.constraint.ConstraintLayout>

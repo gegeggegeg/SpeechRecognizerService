@@ -2,4 +2,8 @@
     <string name="app_name">SpeechRecognizerService</string>
     <string name="sample_device_admin">AdminRequest</string>
     <string name="sample_device_admin_description">Require Admin Authentication</string>
+    <string name="intro">How to use this  app:\n \n
+        This app will track your location every times \n you make a phone call.
+        It also adds a button \n on your screen so you can send your location \n to others during phone
+        calls through SMS message.</string>
 </resources>

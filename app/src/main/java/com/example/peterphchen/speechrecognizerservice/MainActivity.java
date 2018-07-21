@@ -109,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
                     setContentView(R.layout.empty_main);
                 return true;
             case R.id.about:
-                Toast.makeText(this, "This software is developed by Peter Chen", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this,AboutActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.update:
                 if(isDatabaseEmpty()){
