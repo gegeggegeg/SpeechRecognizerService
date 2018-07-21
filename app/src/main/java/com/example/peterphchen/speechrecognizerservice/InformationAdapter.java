@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -102,16 +103,11 @@ public class InformationAdapter extends RecyclerView.Adapter<InformationHolder> 
                 dialogbuilder.setMessage("Do you want to delete this item?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        DatabaseHelper databaseHelper= new DatabaseHelper(context);
-                        SQLiteDatabase database = databaseHelper.getWritableDatabase();
-                        //database.delete(LocationContract.TABLE_NAME,LocationContract.ID+"=?",
-                                //new String[]{String.valueOf(curserData.get(position).getId())});
                         context.getContentResolver().delete(LocationContract.CONTENT_URI,LocationContract.ID+"=?",
                                 new String[]{String.valueOf(curserData.get(position).getId())});
-                        database.close();
-                        curserData.remove(position);
                         notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, position);
+                        notifyItemRangeChanged(position, getItemCount());
+                        curserData.remove(position);
                     }
                 }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override

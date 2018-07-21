@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/about"
         android:title="About"/>
     <item
-        android:icon="@drawable/ic_delete"
         android:id="@+id/delete"
-        android:title="Delete"
-        android:visible="true" />
+        android:title="Delete" />
+    <item
+        android:title="Update"
+        android:id="@+id/update"
+        android:icon="@drawable/ic_update"
+        app:showAsAction="always"/>
 </menu>

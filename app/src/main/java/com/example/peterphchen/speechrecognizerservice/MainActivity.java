@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -21,16 +23,32 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private final static int OVERLAY_PERMISSION_CODE = 999;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        requestPermission();
-        addOverlay();
-        RecyclerView recyclerView = findViewById(R.id.RecyclerViewMain);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new InformationAdapter(this));
+        if(isDatabaseEmpty()){
+            Log.d(TAG, "onCreate: Database is Empty, set special layout");
+            setContentView(R.layout.empty_main);
+        }else {
+            setContentView(R.layout.activity_main);
+            requestPermission();
+            addOverlay();
+            recyclerView = findViewById(R.id.RecyclerViewMain);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(new InformationAdapter(this));
+        }
+    }
+
+    private boolean isDatabaseEmpty(){
+        String[] projection = {LocationContract.ID,LocationContract.LOCATION, LocationContract.PHONE_NUMBER};
+        Cursor cursor = getContentResolver().query(LocationContract.CONTENT_URI,projection,
+                null,null,LocationContract.ID);
+        if(!cursor.moveToFirst())
+            return true;
+        else
+            return false;
     }
 
     private void requestPermission() {
@@ -87,9 +105,22 @@ public class MainActivity extends AppCompatActivity {
                 SQLiteDatabase database = databaseHelper.getWritableDatabase();
                 databaseHelper.onUpgrade(database,1,2);
                 database.close();
+                if(isDatabaseEmpty())
+                    setContentView(R.layout.empty_main);
                 return true;
             case R.id.about:
                 Toast.makeText(this, "This software is developed by Peter Chen", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.update:
+                if(isDatabaseEmpty()){
+                    Log.d(TAG, "onCreate: Database is Empty, set special layout");
+                    setContentView(R.layout.empty_main);
+                }else {
+                    setContentView(R.layout.activity_main);
+                    recyclerView = findViewById(R.id.RecyclerViewMain);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    recyclerView.setAdapter(new InformationAdapter(this));
+                }
                 return true;
             default:
                 throw new IllegalArgumentException("wrong argument");
