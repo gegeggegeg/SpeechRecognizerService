@@ -1,4 +1,4 @@
-package com.example.peterphchen.speechrecognizerservice;
+package com.peterchen.WheresCall;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,7 +12,6 @@ import android.graphics.PixelFormat;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.peterphchen.speechrecognizerservice">
+    package="com.peterchen.WheresCall">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
@@ -19,15 +19,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.peterchen.WheresCall.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AboutActivity" />
+        <activity android:name="com.peterchen.WheresCall.AboutActivity" />
 
-        <receiver android:name=".PhoneCallReceiver"
+        <receiver android:name="com.peterchen.WheresCall.PhoneCallReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -35,10 +35,10 @@
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>
             </intent-filter>
         </receiver>
-        <service android:name=".overlapService"/>
+        <service android:name="com.peterchen.WheresCall.overlapService"/>
         <provider
-            android:authorities="com.example.peterphchen.speechrecognizerservice"
-            android:name=".InformationProvider"
+            android:authorities="com.peterchen.WheresCall"
+            android:name="com.peterchen.WheresCall.InformationProvider"
             android:exported="false"/>
     </application>
 </manifest>

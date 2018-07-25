@@ -1,4 +1,4 @@
-package com.example.peterphchen.speechrecognizerservice;
+package com.example.peterphchen.WheresCall;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.peterphchen.speechrecognizerservice", appContext.getPackageName());
+        assertEquals("com.peterchen.WheresCall", appContext.getPackageName());
     }
 }

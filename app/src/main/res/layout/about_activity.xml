@@ -10,9 +10,10 @@
         android:id="@+id/textAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginStart="50dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="30dp"
         android:text="AppName: Where'sCall "
+        android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -21,15 +22,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:textSize="20sp"
         android:text="Version: V0.04"
         app:layout_constraintTop_toBottomOf="@id/textAppName"
         app:layout_constraintStart_toStartOf="@id/textAppName"/>
 
     <TextView
         android:id="@+id/textIntroduction"
-        android:layout_width="wrap_content"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:textSize="20sp"
         android:text="@string/intro"
         app:layout_constraintStart_toStartOf="@id/textVersion"
         app:layout_constraintTop_toBottomOf="@id/textVersion"
@@ -40,6 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:textSize="20sp"
         android:text="Author: Peter Chen"
         app:layout_constraintStart_toStartOf="@id/textIntroduction"
         app:layout_constraintTop_toBottomOf="@id/textIntroduction"/>
@@ -49,6 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
+        android:textSize="20sp"
         android:text="My Email: chenpeter5566@gmail.com"
         app:layout_constraintTop_toBottomOf="@id/textAuthor"
         app:layout_constraintStart_toStartOf="@id/textAuthor"/>

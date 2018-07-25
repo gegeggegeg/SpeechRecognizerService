@@ -15,27 +15,29 @@
         android:columnCount="2"
         android:rowCount="3">
 
-        <TextView
-            android:id="@+id/indexLocation"
+        <ImageView
+            android:id="@+id/imagelocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textIsSelectable="true"
-            android:text="Location: "/>
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_location"/>
 
         <TextView
             android:id="@+id/textLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAlignment="viewStart"
+            android:layout_marginRight="50dp"
             android:textSize="15sp"
             android:text="textLocation"/>
 
-        <TextView
-            android:id="@+id/indexTime"
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/imageDate"
             android:layout_width="wrap_content"
-            android:textSize="12sp"
-            android:text="Date: "/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/ic_date"/>
 
         <TextView
             android:id="@+id/textTime"
@@ -45,12 +47,11 @@
             android:text="textTime"
             android:textSize="18sp"/>
 
-        <TextView
-            android:id="@+id/indexNumber"
+        <ImageView
+            android:id="@+id/imageNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:text="number: "/>
+            android:src="@drawable/ic_number"/>
 
         <TextView
             android:id="@+id/textPhoneNumber"

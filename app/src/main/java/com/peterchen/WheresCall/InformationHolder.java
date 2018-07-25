@@ -1,8 +1,5 @@
-package com.example.peterphchen.speechrecognizerservice;
+package com.peterchen.WheresCall;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

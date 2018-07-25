@@ -1,11 +1,10 @@
-package com.example.peterphchen.speechrecognizerservice;
+package com.peterchen.WheresCall;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -28,13 +27,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestPermission();
+        addOverlay();
         if(isDatabaseEmpty()){
             Log.d(TAG, "onCreate: Database is Empty, set special layout");
             setContentView(R.layout.empty_main);
         }else {
             setContentView(R.layout.activity_main);
-            requestPermission();
-            addOverlay();
             recyclerView = findViewById(R.id.RecyclerViewMain);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(new InformationAdapter(this));

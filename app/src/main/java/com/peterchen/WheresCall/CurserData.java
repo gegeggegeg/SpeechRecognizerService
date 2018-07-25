@@ -1,4 +1,4 @@
-package com.example.peterphchen.speechrecognizerservice;
+package com.peterchen.WheresCall;
 
 public class CurserData {
     private String addrees;
