@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.PixelFormat;
 import android.location.Address;
@@ -168,7 +169,7 @@ public class overlapService extends Service {
     }
     private String getAddress(){
         try {
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            Geocoder geocoder = new Geocoder(this, Resources.getSystem().getConfiguration().getLocales().get(0));
             List<Address> addressList = geocoder.getFromLocation(myLocation.getLatitude(),myLocation.getLongitude(),1);
             String addressStr = addressList.get(0).getAddressLine(0);
             String areaStr = addressList.get(0).getLocality();
