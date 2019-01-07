@@ -87,6 +87,7 @@ public class overlapService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         phoneNumber = intent.getExtras().getString("phone_number");
+
         String CHANNEL_ID = "my_channel_01";
         NotificationChannel channel = new NotificationChannel(CHANNEL_ID,"temp channel",
                 NotificationManager.IMPORTANCE_DEFAULT);

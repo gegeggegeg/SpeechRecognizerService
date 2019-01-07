@@ -47,6 +47,7 @@ public class PhoneCallReceiver extends BroadcastReceiver {
                 actionIntent.setClassName(ctxt.getPackageName(),overlapService.class.getName());
                 //actionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 incoming_number = phoneNumber;
+                Log.d(TAG, "number = " + phoneNumber);
                 switch (state){
                     case TelephonyManager.CALL_STATE_RINGING:
                         Log.d(TAG, "onCallStateChanged: Call state ringing");
